@@ -28,6 +28,7 @@ async function run() {
 
         const database = client.db('petService');
         const petServices = database.collection('services');
+        const orderCollections = database.collection('orders');
 
 
         //post or add services to DB
@@ -40,7 +41,13 @@ async function run() {
 
         // Get services from DB
         app.get('/services', async (req, res) => {
-            const result = await petServices.find().toArray();
+            const { category } = req.query
+            console.log(category);
+            const query = {}
+            if (category) {
+                query.category = category
+            }
+            const result = await petServices.find(query).toArray();
             res.send(result)
         })
 
@@ -80,6 +87,14 @@ async function run() {
             const id = req.params
             const query = { _id: new ObjectId(id) }
             const result = await petServices.deleteOne(query)
+            res.send(result)
+        })
+
+        //create order list
+        app.post('/orders', async (req, res) => {
+            const data = req.body
+            console.log(data);
+            const result = await orderCollections.insertOne(data)
             res.send(result)
         })
 
