@@ -57,8 +57,21 @@ async function run() {
         //my listings
         app.get('/my-services', async (req, res) => {
             const { email } = req.query
-            const query = {email: email}
+            const query = { email: email }
             const result = await petServices.find(query).toArray()
+            res.send(result)
+        })
+
+
+        //update listing
+        app.put('/update/:id', async (req, res) => {
+            const data = req.body;
+            const id = req.params
+            const query = { _id: new ObjectId(id) }
+            const updateServices = {
+                $set: data
+            }
+            const result = await petServices.updateOne(query, updateServices)
             res.send(result)
         })
 
