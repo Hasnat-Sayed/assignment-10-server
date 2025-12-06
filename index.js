@@ -34,7 +34,7 @@ async function run() {
         //post or add services to DB
         app.post('/services', async (req, res) => {
             const data = req.body;
-            console.log(data);
+            // console.log(data);
             const result = await petServices.insertOne(data);
             res.send(result)
         })
@@ -42,7 +42,7 @@ async function run() {
         // Get services from DB
         app.get('/services', async (req, res) => {
             const { category } = req.query
-            console.log(category);
+            // console.log(category);
             const query = {}
             if (category) {
                 query.category = category
@@ -55,7 +55,7 @@ async function run() {
         //service details
         app.get('/services/:id', async (req, res) => {
             const id = req.params
-            console.log(id);
+            // console.log(id);
             const query = { _id: new ObjectId(id) }
             const result = await petServices.findOne(query)
             res.send(result);
@@ -104,7 +104,7 @@ async function run() {
         });
 
         //get by category
-        app.get('/category', async(req, res) => {
+        app.get('/category', async (req, res) => {
             const { category } = req.query;
             const query = { category: category }
             const result = await petServices.find(query).toArray();
@@ -112,10 +112,18 @@ async function run() {
 
         })
 
+        //search
+        app.get("/search", async (req, res) => {
+            const search = req.query.search || "" ;
+            // console.log(search)
+            const result = await petServices.find({ name: { $regex: search, $options: "i" } }).toArray()
+            res.send(result)
+        })
+
         //create order list
         app.post('/orders', async (req, res) => {
             const data = req.body
-            console.log(data);
+            // console.log(data);
             const result = await orderCollections.insertOne(data)
             res.send(result)
         })
@@ -123,7 +131,9 @@ async function run() {
 
         //get orders
         app.get('/orders', async (req, res) => {
-            const result = await orderCollections.find().toArray();
+            const { email } = req.query
+            const query = { buyerEmail: email }
+            const result = await orderCollections.find(query).toArray();
             res.status(200).send(result)
         })
 
