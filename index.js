@@ -90,6 +90,19 @@ async function run() {
             res.send(result)
         })
 
+        //get latest 6
+        app.get("/latest", async (req, res) => {
+            const result = await petServices
+                .find()
+                .sort({ created_at: "desc" })
+                .limit(6)
+                .toArray();
+
+            // console.log(result);
+
+            res.send(result);
+        });
+
         //create order list
         app.post('/orders', async (req, res) => {
             const data = req.body
