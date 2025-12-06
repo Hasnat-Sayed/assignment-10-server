@@ -103,6 +103,15 @@ async function run() {
             res.send(result);
         });
 
+        //get by category
+        app.get('/category', async(req, res) => {
+            const { category } = req.query;
+            const query = { category: category }
+            const result = await petServices.find(query).toArray();
+            res.send(result)
+
+        })
+
         //create order list
         app.post('/orders', async (req, res) => {
             const data = req.body
